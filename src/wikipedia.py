@@ -61,3 +61,12 @@ class WikiWorker:
         self._page = response.text
 
         yield from self._extract_company_symbols()
+
+
+if __name__ == "__main__":
+    worker = WikiWorker()
+    list_of_symbols = []
+    for symbol in worker.get_page_content():
+        list_of_symbols.append(symbol)
+    print("Symbols: ", len(list_of_symbols))
+    print("Last Symbol: ", list_of_symbols[-1])
