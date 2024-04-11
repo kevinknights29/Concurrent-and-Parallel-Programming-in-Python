@@ -1,10 +1,10 @@
 [project]
-name = "python dev-container template"
+name = "Concurrent-and-Parallel-Programming-in-Python"
 version = "0.4.0"
 authors = [
   {name = "Kevin Knights", email = "kevin.k.knights@gmail.com"},
 ]
-description = "This is a template for Python projects leveraging a Dev Container with VS Code."
+description = "This project implements the code examples from the course: `Concurrent and Parallel Programming in Python` by Maximilian Schallwig."
 readme = "README.md"
 license = {file = "LICENSE"}
 
