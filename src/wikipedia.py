@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
 from typing import Generator
 
 import requests  # type: ignore
@@ -31,7 +30,7 @@ class WikiWorker:
         from a table with the id "constituents". It yields each company symbol one by one.
 
         Yields:
-            Generator[str, None, None]: A generator that yields each company symbol.
+            Generator[list[str], None, None]: A generator that yields each company symbol.
         """
         soup = BeautifulSoup(self._page, "html.parser")
         table = soup.find("table", {"id": "constituents"})
@@ -40,7 +39,7 @@ class WikiWorker:
             symbol = row.find_all("td")[0].text.strip("\n")
             yield [symbol]
 
-    def get_page_content(self) -> Generator[list[Any], None, None]:
+    def get_page_content(self) -> Generator[list[str], None, None]:
         """
         Fetches the page content if it hasn't been fetched already, and yields the company symbols.
 
@@ -50,7 +49,7 @@ class WikiWorker:
         Otherwise, it calls the `_extract_company_symbols` method with the response text and yields the company symbols.
 
         Returns:
-            Generator[list, None, None]: A generator that yields the company symbols if the page content
+            Generator[list[str], None, None]: A generator that yields the company symbols if the page content
             was fetched successfully, or an empty list otherwise.
         """
         if not self._page:
