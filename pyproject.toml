@@ -1,6 +1,6 @@
 [project]
 name = "Concurrent-and-Parallel-Programming-in-Python"
-version = "0.4.1"
+version = "0.0.1"
 authors = [
   {name = "Kevin Knights", email = "kevin.k.knights@gmail.com"},
 ]
