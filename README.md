@@ -1,13 +1,6 @@
-# Python-Dev-Container-Template
+# Concurrent-and-Parallel-Programming-in-Python
 
-This is a template for Python projects leveraging a Dev Container with VS Code.
-
-## Checklist
-
-Remove once all items have been checked.
-
-- [ ] [Dev Container Name](.devcontainer/devcontainer.json) - Line 2
-- [ ] [Project Details](pyproject.toml) - Line 2-9
+This project implements the code examples from the course: `Concurrent and Parallel Programming in Python` by Maximilian Schallwig.
 
 ## Topics
 
@@ -38,3 +31,5 @@ Remove once all items have been checked.
 |      |          |
 
 ## Resources
+
+- [Concurrent and Parallel Programming in Python](https://learning.oreilly.com/course/concurrent-and-parallel/9781804611944/)
