@@ -1,7 +1,7 @@
 # Source: https://github.com/pre-commit/pre-commit/blob/main/.pre-commit-config.yaml
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -17,7 +17,7 @@ repos:
       - id: requirements-txt-fixer
       - id: detect-private-key
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.4
+    rev: v0.3.5
     hooks:
       - id: ruff
         args: [--fix]
@@ -46,7 +46,7 @@ repos:
       - id: pyupgrade
         args: [--py38-plus]
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.20.0
+    rev: v3.21.3
     hooks:
       - id: commitizen
         args: [--all-files]
