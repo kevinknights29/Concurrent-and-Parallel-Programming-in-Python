@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import random
+import time
 from threading import Thread
 
 from lxml import html
@@ -40,6 +42,7 @@ class YahooFinancePriceWorker(Thread):
         It fetches the price of the stock ticker from Yahoo Finance and prints it.
         If the fetch fails, it prints an error message.
         """
+        time.sleep(random.random() * 60)  # Sleep for a random amount of time, max 10 seconds.
         print(f"Getting price for {self._ticker}")
         response = get(self._url)
         if response.status_code == 200:
@@ -56,7 +59,7 @@ class YahooFinancePriceWorker(Thread):
             )
             percentual_change = (
                 html.fromstring(page_content)
-                .xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[3]/span')[1]
+                .xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[3]/span')[0]
                 .text
             )
             print(
