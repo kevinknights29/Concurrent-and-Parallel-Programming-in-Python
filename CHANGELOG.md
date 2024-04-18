@@ -1,3 +1,14 @@
+## 0.2.0 (2024-04-18)
+
+### Feat
+
+- updated main to leverage scheduler
+- added YahooFinancePriceScheduler class, Stock namedtuple, and updated YahooFinancePriceWorker inheritance
+
+### Refactor
+
+- removed print in YahooFinancePriceWorker get_price_information func
+
 ## 0.1.0 (2024-04-12)
 
 ### Feat
