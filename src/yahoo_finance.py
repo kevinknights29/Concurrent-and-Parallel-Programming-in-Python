@@ -98,7 +98,6 @@ class YahooFinancePriceWorker:
             Stock: A Stock object containing the fetched price information.
         """
         time.sleep(random.random() * 10)  # Sleep for a random amount of time, max 10 seconds.
-        print(f"Getting price for {self._ticker}")
         response = get(self._url)
         if response.status_code == 200:
             page_content = response.text
