@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 import random
 import time
 from collections import namedtuple
@@ -9,6 +10,10 @@ from threading import Thread
 from lxml import html
 from requests import get  # type: ignore
 
+# Initialize the logger
+logger = logging.getLogger(__name__)
+
+# Define a named tuple to store stock information
 Stock = namedtuple("Stock", ["ticker", "price", "price_change", "percentual_change"])
 
 
@@ -48,13 +53,12 @@ class YahooFinancePriceScheduler(Thread):
             if ticker == self.STOP_SIGNAL:
                 break
             price_info = YahooFinancePriceWorker(ticker).get_price_information()
-            print(
-                (
-                    f"Stock: {price_info.ticker}, "
-                    f"Price: {price_info.price}, "
-                    f"Change: {price_info.price_change}, "
-                    f"Percentual Change: {price_info.percentual_change}"
-                ),
+            logger.info(
+                ("Stock: %s, " "Price: %s, " "Change: %s, " "Percentual Change: %s"),
+                price_info.ticker,
+                price_info.price,
+                price_info.price_change,
+                price_info.percentual_change,
             )
             time.sleep(random.random())  # Sleep for a random amount of time, max 1 second.
 
@@ -118,4 +122,5 @@ class YahooFinancePriceWorker:
             )
             return Stock(self._ticker, price, price_change, percentual_change)
         else:
-            raise Exception(f"Failed to fetch price for {self._ticker}")
+            logger.error("Failed to fetch price information for %s", self._ticker)
+            raise Exception("Failed to fetch stock price information")

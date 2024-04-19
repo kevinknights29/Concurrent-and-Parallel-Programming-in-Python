@@ -1,12 +1,32 @@
 from __future__ import annotations
 
+import json
+import logging.config
 import time
 from multiprocessing import Queue
+from pathlib import Path
 
 from src import wikipedia
 from src import yahoo_finance
 
+# Define the number of YahooFinancePriceScheduler instances
 YAHOO_SCHEDULERS = 5
+
+# Initialize the logger
+logger = logging.getLogger(__name__)
+
+
+def _setup_logging() -> None:
+    """Configures the logging module using the configuration in config.json."""
+
+    # Creates log directory if it does not exist
+    Path("logs").mkdir(parents=True, exist_ok=True)
+
+    # Create a log file if it does not exist
+    Path("logs/app.log").touch(exist_ok=True)  # filename should match the one in config.json
+
+    # Configure ROOT logger
+    logging.config.dictConfig(json.load(open("config.json")))
 
 
 def main() -> None:
@@ -18,6 +38,8 @@ def main() -> None:
     to stop after processing all tickers, and finally waits for all schedulers to finish.
 
     """
+    _setup_logging()
+
     start_time = time.time()
     tickers_queue: Queue = Queue()
 
@@ -38,7 +60,7 @@ def main() -> None:
     for scheduler in yahoo_schedulers:
         scheduler.join()
 
-    print(f"Time taken: {time.time() - start_time:.2f} seconds")
+    logger.debug(f"Time taken: {time.time() - start_time:.2f} seconds")
 
 
 if __name__ == "__main__":
