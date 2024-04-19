@@ -1,3 +1,15 @@
+## 0.3.0 (2024-04-19)
+
+### Feat
+
+- added config json file
+- added logging to app
+- added logging to submodules
+
+### Refactor
+
+- updated pre-commit hooks version
+
 ## 0.2.0 (2024-04-18)
 
 ### Feat
