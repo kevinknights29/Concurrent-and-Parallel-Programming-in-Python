@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+import logging
 from typing import Generator
 
 import requests  # type: ignore
 from bs4 import BeautifulSoup
+
+
+# Initialize the logger
+logger = logging.getLogger(__name__)
 
 
 class WikiWorker:
@@ -55,7 +60,7 @@ class WikiWorker:
         if not self._page:
             response = requests.get(self._url)
             if response.status_code != 200:
-                print("Failed to fetch page content")
+                logger.error("Failed to fetch page content")
                 yield []
 
         self._page = response.text
