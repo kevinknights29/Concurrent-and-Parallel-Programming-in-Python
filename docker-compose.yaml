@@ -19,7 +19,9 @@ services:
       - net
 
   db:
-    image: postgres
+    build:
+      context: postgres
+      dockerfile: Dockerfile
     restart: always
     ports:
       - "5432:5432"
