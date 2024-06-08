@@ -1,4 +1,9 @@
 {
+    "finance_yahoo": {
+        "price_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span",
+        "price_change_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[2]/span",
+        "percentual_change_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[3]/span"
+    },
     "logging": {
         "version": 1,
         "disable_existing_loggers": false,
