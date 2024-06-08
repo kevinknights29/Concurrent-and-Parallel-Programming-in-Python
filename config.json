@@ -1,46 +1,48 @@
 {
-    "version": 1,
-    "disable_existing_loggers": false,
-    "formatters": {
-        "simple": {
-            "format": "%(levelname)s: %(message)s"
+    "logging": {
+        "version": 1,
+        "disable_existing_loggers": false,
+        "formatters": {
+            "simple": {
+                "format": "%(levelname)s: %(message)s"
+            },
+            "detailed": {
+                "format": "[%(levelname)s|%(module)s|L%(lineno)d] %(asctime)s: %(message)s",
+                "datefmt": "%Y-%m-%dT%H:%M:%S%z"
+            }
         },
-        "detailed": {
-            "format": "[%(levelname)s|%(module)s|L%(lineno)d] %(asctime)s: %(message)s",
-            "datefmt": "%Y-%m-%dT%H:%M:%S%z"
-        }
-    },
-    "handlers": {
-        "stderr": {
-            "class": "logging.StreamHandler",
-            "level": "WARNING",
-            "formatter": "simple",
-            "stream": "ext://sys.stderr"
+        "handlers": {
+            "stderr": {
+                "class": "logging.StreamHandler",
+                "level": "WARNING",
+                "formatter": "simple",
+                "stream": "ext://sys.stderr"
+            },
+            "file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "level": "DEBUG",
+                "formatter": "detailed",
+                "filename": "logs/app.log",
+                "maxBytes": 1048576,
+                "backupCount": 3
+            },
+            "error_file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "level": "ERROR",
+                "formatter": "detailed",
+                "filename": "logs/errors.log",
+                "maxBytes": 1048576,
+                "backupCount": 3
+            }
         },
-        "file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "level": "DEBUG",
-            "formatter": "detailed",
-            "filename": "logs/app.log",
-            "maxBytes": 1048576,
-            "backupCount": 3
-        },
-        "error_file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "level": "ERROR",
-            "formatter": "detailed",
-            "filename": "logs/errors.log",
-            "maxBytes": 1048576,
-            "backupCount": 3
-        }
-    },
-    "loggers": {
-        "root": {
-            "level": "DEBUG",
-            "handlers": [
-                "stderr",
-                "file"
-            ]
+        "loggers": {
+            "root": {
+                "level": "DEBUG",
+                "handlers": [
+                    "stderr",
+                    "file"
+                ]
+            }
         }
     }
 }
