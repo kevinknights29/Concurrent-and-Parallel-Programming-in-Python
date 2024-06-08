@@ -96,7 +96,7 @@ class PostgresWorker:
 
     def insert_data(self) -> None:
         """Executes the SQL query to insert data into the 'stocks' table."""
-        with create_engine(URL) as engine:
+        with create_engine(self.CONNECTION_STRING) as engine:
             with engine.connect() as conn:
                 conn.execute(
                     self._create_insert_query(),
