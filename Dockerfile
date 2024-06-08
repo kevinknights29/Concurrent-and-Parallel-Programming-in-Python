@@ -11,6 +11,9 @@ RUN apt-get update \
     python3-dev \
     libffi-dev \
     g++ \
+    # deps for psycopg2
+    libpq-dev \
+    postgresql \
     && apt-get clean
 
 # Set the working directory to /opt/app
