@@ -25,6 +25,9 @@ COPY requirements.txt .
 # Install dependencies from the requirements file
 RUN pip install -r requirements.txt
 
+# Copy logging config
+COPY config.json .
+
 # Copy source package
 ADD src ./src
 
