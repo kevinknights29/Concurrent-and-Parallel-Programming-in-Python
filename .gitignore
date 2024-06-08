@@ -3,6 +3,9 @@
 # Pre-commit hooks
 .ruff_cache/
 
+# Logs
+**/*.log.*
+
 # =========== Python ===========
 
 # Byte-compiled / optimized / DLL files
