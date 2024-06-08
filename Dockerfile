@@ -26,7 +26,7 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # Copy source package
-ADD src .
+ADD src ./src
 
 # Copy application entrypoint
 COPY main.py .
