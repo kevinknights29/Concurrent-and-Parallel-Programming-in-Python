@@ -79,7 +79,7 @@ class YahooFinancePriceScheduler(Thread):
                 price_info.percentual_change,
             )
             if self._output_queue is not None:
-                self._output_queue.put(price_info)
+                self._output_queue.put(price_info._asdict())
                 logger.info("Ticker %s data has been pushed to an output queue!", ticker)
             time.sleep(random.random())  # Sleep for a random amount of time, max 1 second.
 
