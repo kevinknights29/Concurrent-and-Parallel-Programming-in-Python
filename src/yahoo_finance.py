@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import logging
+import os
 import random
 import time
 from collections import namedtuple
@@ -10,8 +12,19 @@ from threading import Thread
 from lxml import html
 from requests import get  # type: ignore
 
+from src.utils import constants
+
 # Initialize the logger
 logger = logging.getLogger(__name__)
+
+SCRAPPING_CONFIG = json.load(
+    open(
+        os.path.join(
+            constants.ROOT_DIR,
+            "config.json",
+        ),
+    ),
+)["finance_yahoo"]
 
 # Define a named tuple to store stock information
 Stock = namedtuple("Stock", ["ticker", "price", "price_change", "percentual_change"])
@@ -113,21 +126,15 @@ class YahooFinancePriceWorker:
         response = get(self._url)
         if response.status_code == 200:
             page_content = response.text
-            price = (
-                html.fromstring(page_content)
-                .xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]')[0]
-                .text
-            )
-            price_change = (
-                html.fromstring(page_content)
-                .xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[2]/span')[0]
-                .text
-            )
-            percentual_change = (
-                html.fromstring(page_content)
-                .xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[3]/span')[0]
-                .text
-            )
+            price = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["price_xpath"]).text
+            price_change = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["price_change_xpath"]).text
+            percentual_change = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["percentual_change_xpath"]).text
+
+            if len(price_change) > 1:
+                price_change = "".join(price_change)
+            if len(percentual_change) > 1:
+                percentual_change = "".join(percentual_change)
+
             return Stock(self._ticker, price, price_change, percentual_change)
         else:
             logger.error("Failed to fetch price information for %s", self._ticker)
