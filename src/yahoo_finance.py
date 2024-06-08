@@ -28,17 +28,20 @@ class YahooFinancePriceScheduler(Thread):
 
     def __init__(
         self,
-        queue: Queue,
+        input_queue: Queue,
+        output_queue: Queue | None = None,
         **kwargs,
     ) -> None:
         """Initializes a YahooFinancePriceScheduler instance.
 
         Args:
-            queue (Queue): The queue to retrieve stock tickers.
+            input_queue (Queue): The queue to retrieve stock tickers.
+            output_queue (Queue): The queue to storing information retrieved for further processing.
             **kwargs: Arbitrary keyword arguments.
         """
         super().__init__(**kwargs)
-        self._queue = queue
+        self._input_queue = input_queue
+        self._output_queue = output_queue
         self.start()
 
     def run(self) -> None:
@@ -49,8 +52,10 @@ class YahooFinancePriceScheduler(Thread):
 
         """
         while True:
-            ticker = self._queue.get()
+            ticker = self._input_queue.get()
             if ticker == self.STOP_SIGNAL:
+                if self._output_queue is not None:
+                    self._output_queue.put(self.STOP_SIGNAL)
                 break
             price_info = YahooFinancePriceWorker(ticker).get_price_information()
             logger.info(
@@ -60,6 +65,9 @@ class YahooFinancePriceScheduler(Thread):
                 price_info.price_change,
                 price_info.percentual_change,
             )
+            if self._output_queue is not None:
+                self._output_queue.put(price_info)
+                logger.info("Ticker %s data has been pushed to an output queue!", ticker)
             time.sleep(random.random())  # Sleep for a random amount of time, max 1 second.
 
 
