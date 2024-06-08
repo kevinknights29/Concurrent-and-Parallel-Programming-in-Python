@@ -126,9 +126,20 @@ class YahooFinancePriceWorker:
         response = get(self._url)
         if response.status_code == 200:
             page_content = response.text
-            price = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["price_xpath"])[0].text
-            price_change = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["price_change_xpath"])[0].text
-            percentual_change = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["percentual_change_xpath"])[0].text
+            try:
+                price = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["price_xpath"])[0].text
+            except IndexError:
+                logger.error("Something went wrong... Check price's xpath in config.json")
+            try:
+                price_change = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["price_change_xpath"])[0].text
+            except IndexError:
+                logger.error("Something went wrong... Check price_change's xpath in config.json")
+            try:
+                percentual_change = (
+                    html.fromstring(page_content).xpath(SCRAPPING_CONFIG["percentual_change_xpath"])[0].text
+                )
+            except IndexError:
+                logger.error("Something went wrong... Check percentual_change's xpath in config.json")
 
             if len(price_change) > 1:
                 price_change = "".join(price_change)
