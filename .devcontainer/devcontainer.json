@@ -13,8 +13,6 @@
                 "charliermarsh.ruff",
                 "DavidAnson.vscode-markdownlint",
                 "dotenv.dotenv-vscode",
-                "GitHub.copilot",
-                "GitHub.copilot-chat",
                 "KevinRose.vsc-python-indent",
                 "ms-azuretools.vscode-docker",
                 "ms-python.python",
