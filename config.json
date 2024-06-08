@@ -24,6 +24,14 @@
             "filename": "logs/app.log",
             "maxBytes": 1048576,
             "backupCount": 3
+        },
+        "error_file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "ERROR",
+            "formatter": "detailed",
+            "filename": "logs/errors.log",
+            "maxBytes": 1048576,
+            "backupCount": 3
         }
     },
     "loggers": {
