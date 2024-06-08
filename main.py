@@ -10,7 +10,7 @@ from src import postgres
 from src import wikipedia
 from src import yahoo_finance
 
-# Define the number of YahooFinancePriceScheduler instances
+# Define the number of scheduler instances
 YAHOO_SCHEDULERS = 5
 POSTGRES_SCHEDULERS = 5
 
