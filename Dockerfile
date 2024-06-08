@@ -25,5 +25,11 @@ COPY requirements.txt .
 # Install dependencies from the requirements file
 RUN pip install -r requirements.txt
 
+# Copy source package
+ADD src .
+
+# Copy application entrypoint
+COPY main.py .
+
 # Keep container idle
 CMD tail -f /dev/null
