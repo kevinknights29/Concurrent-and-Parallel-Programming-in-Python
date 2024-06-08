@@ -26,7 +26,8 @@ def _setup_logging() -> None:
     Path("logs/errors.log").touch(exist_ok=True)  # filename should match the one in config.json
 
     # Configure ROOT logger
-    logging.config.dictConfig(json.load(open("config.json")))
+    LOGGING_CONFIG = json.load(open("config.json"))["logging"]
+    logging.config.dictConfig(LOGGING_CONFIG)
 
 
 def main() -> None:
