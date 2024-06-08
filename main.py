@@ -21,11 +21,9 @@ logger = logging.getLogger(__name__)
 def _setup_logging() -> None:
     """Configures the logging module using the configuration in config.json."""
 
-    # Creates log directory if it does not exist
     Path("logs").mkdir(parents=True, exist_ok=True)
-
-    # Create a log file if it does not exist
     Path("logs/app.log").touch(exist_ok=True)  # filename should match the one in config.json
+    Path("logs/errors.log").touch(exist_ok=True)  # filename should match the one in config.json
 
     # Configure ROOT logger
     logging.config.dictConfig(json.load(open("config.json")))
