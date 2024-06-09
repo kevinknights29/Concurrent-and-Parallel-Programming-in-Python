@@ -61,7 +61,7 @@ class PostgresWorker:
     """
 
     CONNECTION_STRING = URL.create(
-        drivername="postgresql+psycopg2",
+        drivername="postgresql+psycopg",
         username=DB_USERNAME,
         password=DB_PASSWORD,
         database=DB_NAME,
