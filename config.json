@@ -1,38 +1,53 @@
 {
-    "version": 1,
-    "disable_existing_loggers": false,
-    "formatters": {
-        "simple": {
-            "format": "%(levelname)s: %(message)s"
-        },
-        "detailed": {
-            "format": "[%(levelname)s|%(module)s|L%(lineno)d] %(asctime)s: %(message)s",
-            "datefmt": "%Y-%m-%dT%H:%M:%S%z"
-        }
+    "finance_yahoo": {
+        "price_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span",
+        "price_change_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[2]/span",
+        "percentual_change_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[3]/span"
     },
-    "handlers": {
-        "stderr": {
-            "class": "logging.StreamHandler",
-            "level": "WARNING",
-            "formatter": "simple",
-            "stream": "ext://sys.stderr"
+    "logging": {
+        "version": 1,
+        "disable_existing_loggers": false,
+        "formatters": {
+            "simple": {
+                "format": "%(levelname)s: %(message)s"
+            },
+            "detailed": {
+                "format": "[%(levelname)s|%(module)s|L%(lineno)d] %(asctime)s: %(message)s",
+                "datefmt": "%Y-%m-%dT%H:%M:%S%z"
+            }
         },
-        "file": {
-            "class": "logging.handlers.RotatingFileHandler",
-            "level": "DEBUG",
-            "formatter": "detailed",
-            "filename": "logs/app.log",
-            "maxBytes": 1048576,
-            "backupCount": 3
-        }
-    },
-    "loggers": {
-        "root": {
-            "level": "DEBUG",
-            "handlers": [
-                "stderr",
-                "file"
-            ]
+        "handlers": {
+            "stderr": {
+                "class": "logging.StreamHandler",
+                "level": "WARNING",
+                "formatter": "simple",
+                "stream": "ext://sys.stderr"
+            },
+            "file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "level": "DEBUG",
+                "formatter": "detailed",
+                "filename": "logs/app.log",
+                "maxBytes": 1048576,
+                "backupCount": 3
+            },
+            "error_file": {
+                "class": "logging.handlers.RotatingFileHandler",
+                "level": "ERROR",
+                "formatter": "detailed",
+                "filename": "logs/errors.log",
+                "maxBytes": 1048576,
+                "backupCount": 3
+            }
+        },
+        "loggers": {
+            "root": {
+                "level": "DEBUG",
+                "handlers": [
+                    "stderr",
+                    "file"
+                ]
+            }
         }
     }
 }

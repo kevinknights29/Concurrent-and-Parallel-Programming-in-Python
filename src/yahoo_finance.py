@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import logging
+import os
 import random
 import time
 from collections import namedtuple
@@ -10,8 +12,19 @@ from threading import Thread
 from lxml import html
 from requests import get  # type: ignore
 
+from src.utils import constants
+
 # Initialize the logger
 logger = logging.getLogger(__name__)
+
+SCRAPPING_CONFIG = json.load(
+    open(
+        os.path.join(
+            constants.ROOT_DIR,
+            "config.json",
+        ),
+    ),
+)["finance_yahoo"]
 
 # Define a named tuple to store stock information
 Stock = namedtuple("Stock", ["ticker", "price", "price_change", "percentual_change"])
@@ -28,17 +41,20 @@ class YahooFinancePriceScheduler(Thread):
 
     def __init__(
         self,
-        queue: Queue,
+        input_queue: Queue,
+        output_queue: Queue | None = None,
         **kwargs,
     ) -> None:
         """Initializes a YahooFinancePriceScheduler instance.
 
         Args:
-            queue (Queue): The queue to retrieve stock tickers.
+            input_queue (Queue): The queue to retrieve stock tickers.
+            output_queue (Queue): The queue to storing information retrieved for further processing.
             **kwargs: Arbitrary keyword arguments.
         """
         super().__init__(**kwargs)
-        self._queue = queue
+        self._input_queue = input_queue
+        self._output_queue = output_queue
         self.start()
 
     def run(self) -> None:
@@ -49,8 +65,10 @@ class YahooFinancePriceScheduler(Thread):
 
         """
         while True:
-            ticker = self._queue.get()
+            ticker = self._input_queue.get()
             if ticker == self.STOP_SIGNAL:
+                if self._output_queue is not None:
+                    self._output_queue.put(self.STOP_SIGNAL)
                 break
             price_info = YahooFinancePriceWorker(ticker).get_price_information()
             logger.info(
@@ -60,6 +78,9 @@ class YahooFinancePriceScheduler(Thread):
                 price_info.price_change,
                 price_info.percentual_change,
             )
+            if self._output_queue is not None:
+                self._output_queue.put(price_info._asdict())
+                logger.info("Ticker %s data has been pushed to an output queue!", ticker)
             time.sleep(random.random())  # Sleep for a random amount of time, max 1 second.
 
 
@@ -105,21 +126,26 @@ class YahooFinancePriceWorker:
         response = get(self._url)
         if response.status_code == 200:
             page_content = response.text
-            price = (
-                html.fromstring(page_content)
-                .xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[1]')[0]
-                .text
-            )
-            price_change = (
-                html.fromstring(page_content)
-                .xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[2]/span')[0]
-                .text
-            )
-            percentual_change = (
-                html.fromstring(page_content)
-                .xpath('//*[@id="quote-header-info"]/div[3]/div[1]/div[1]/fin-streamer[3]/span')[0]
-                .text
-            )
+            try:
+                price = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["price_xpath"])[0].text
+            except IndexError:
+                logger.error("Something went wrong... Check price's xpath in config.json")
+            try:
+                price_change = html.fromstring(page_content).xpath(SCRAPPING_CONFIG["price_change_xpath"])[0].text
+            except IndexError:
+                logger.error("Something went wrong... Check price_change's xpath in config.json")
+            try:
+                percentual_change = (
+                    html.fromstring(page_content).xpath(SCRAPPING_CONFIG["percentual_change_xpath"])[0].text
+                )
+            except IndexError:
+                logger.error("Something went wrong... Check percentual_change's xpath in config.json")
+
+            if len(price_change) > 1:
+                price_change = "".join(price_change)
+            if len(percentual_change) > 1:
+                percentual_change = "".join(percentual_change)
+
             return Stock(self._ticker, price, price_change, percentual_change)
         else:
             logger.error("Failed to fetch price information for %s", self._ticker)
