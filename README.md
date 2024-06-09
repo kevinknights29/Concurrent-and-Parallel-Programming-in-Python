@@ -20,6 +20,18 @@ The project involves building a system that fetches the list of companies from t
 
 The stock data is then inserted into a PostgreSQL database. The system leverages concurrent and parallel programming in Python to efficiently manage the flow of data between different components: fetching the list of companies, retrieving stock prices, and storing the data in the database.
 
+### Processing Logs
+
+![image](https://github.com/kevinknights29/Concurrent-and-Parallel-Programming-in-Python/assets/74464814/12ebb4a7-5039-4746-8083-34efb062fd62)
+
+### Results from DB
+
+```sql
+select * from public.prices;
+```
+
+![image](https://github.com/kevinknights29/Concurrent-and-Parallel-Programming-in-Python/assets/74464814/484255e0-90ac-49c6-a5f2-4571bc6e5abc)
+
 ## Goals
 
 The primary goal of this project is to learn and demonstrate the concepts of concurrent and parallel programming in Python.
