@@ -96,16 +96,16 @@ class PostgresWorker:
 
     def insert_data(self) -> None:
         """Executes the SQL query to insert data into the 'stocks' table."""
-        with create_engine(self.CONNECTION_STRING) as engine:
-            with engine.connect() as conn:
-                conn.execute(
-                    self._create_insert_query(),
-                    {
-                        "ticker": self._ticker,
-                        "price": self._price,
-                        "price_change": self._price_change,
-                        "percentual_change": self._percentual_change,
-                    },
-                )
-                conn.commit()
+        engine = create_engine(self.CONNECTION_STRING)
+        with engine.connect() as conn:
+            conn.execute(
+                self._create_insert_query(),
+                {
+                    "ticker": self._ticker,
+                    "price": self._price,
+                    "price_change": self._price_change,
+                    "percentual_change": self._percentual_change,
+                },
+            )
+            conn.commit()
             logger.info("Query executed successfully.")
