@@ -78,7 +78,7 @@ class PostgresWorker:
         """
         self._data = data
         self._ticker = self._data["ticker"]
-        self._price = self._data["price"]
+        self._price = self._data["price"].replace(",", "")
         self._price_change = self._data["price_change"]
         self._percentual_change = self._data["percentual_change"]
 
