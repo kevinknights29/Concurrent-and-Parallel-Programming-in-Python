@@ -83,13 +83,13 @@ class PostgresWorker:
         self._percentual_change = self._data["percentual_change"]
 
     def _create_insert_query(self) -> TextClause:
-        """Creates the SQL query for inserting data into the 'stocks' table.
+        """Creates the SQL query for inserting data into the 'prices' table.
 
         Returns:
             TextClause: The SQL query as a TextClause object.
         """
         query = text(
-            "INSERT INTO stocks (ticker, price, price_change, percentual_change)"
+            "INSERT INTO prices (ticker, price, price_change, percentual_change)"
             "VALUES (:ticker, :price, :price_change, :percentual_change);",
         )
         return query
