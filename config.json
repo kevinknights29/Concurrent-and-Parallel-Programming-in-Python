@@ -1,4 +1,44 @@
 {
+    "pipeline": {
+        "queues": [
+            {
+                "name": "Tickers",
+                "description": "Contains stock tickers to be scrapped from yahoo finance."
+            },
+            {
+                "name": "Postgres",
+                "description": "Contains stock information to be inserted into postgres db."
+            }
+        ],
+        "workers": [
+            {
+                "name": "Wiki",
+                "description": "Responsible for the extraction of the stock tickers of S&P500 companies.",
+                "module": "src.wikipedia",
+                "class": "WikiWorker",
+                "output_queue": "Tickers"
+            }
+        ],
+        "schedulers": [
+            {
+                "name": "Yahoo",
+                "description": "Responsible for the extraction of the price information from Yahoo finance for a given stock ticker.",
+                "module": "src.yahoo_finance",
+                "class": "YahooFinancePriceScheduler",
+                "instances": 5,
+                "input_queue": "Tickers",
+                "output_queue": "Postgres"
+            },
+            {
+                "name": "Postgres",
+                "description": "Responsible for the insertion of the information given.",
+                "module": "src.postgres",
+                "class": "PostgresScheduler",
+                "instances": 5,
+                "input_queue": "Postgres"
+            }
+        ]
+    },
     "finance_yahoo": {
         "price_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span",
         "price_change_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[2]/span",
