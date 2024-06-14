@@ -26,7 +26,8 @@
                 "VisualStudioExptTeam.vscodeintellicode",
                 "donjayamanne.python-environment-manager",
                 "github.vscode-github-actions",
-                "bierner.markdown-mermaid"
+                "bierner.markdown-mermaid",
+                "mhutchie.git-graph"
             ]
         }
     },
