@@ -1,9 +1,7 @@
 from __future__ import annotations
 
+import json
 import logging
-
-import yaml  # type: ignore
-from yaml.loader import SafeLoader  # type: ignore
 
 from src.utils import constants
 
@@ -24,7 +22,7 @@ def config() -> dict:
     global conf
     if not conf:
         logger.debug("Reading from config file.")
-        with open(constants.CONFIG_FILE, encoding="utf-8") as cfg:
-            conf = yaml.load(cfg, Loader=SafeLoader)
+        with open(constants.CONFIG_FILE, encoding="utf-8") as file:
+            conf = json.load(file)
     logger.info("Config loaded.")
     return conf
