@@ -1,5 +1,5 @@
 {
-    "name": "python-template",
+    "name": "concurrent-and-parallel-python",
     "build": {
         "dockerfile": "Dockerfile",
         "context": "."
