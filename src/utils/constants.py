@@ -5,3 +5,6 @@ import os
 UTILS_DIR = os.path.dirname(__file__)
 SRC_DIR = os.path.dirname(UTILS_DIR)
 ROOT_DIR = os.path.dirname(SRC_DIR)
+
+# Files
+CONFIG_FILE = os.path.join(ROOT_DIR, "config.json")
