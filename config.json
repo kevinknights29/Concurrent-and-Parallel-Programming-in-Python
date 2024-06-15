@@ -1,43 +1,43 @@
 {
     "pipeline": {
-        "queues": [
-            {
+        "queues": {
+            "tickers": {
                 "name": "Tickers",
                 "description": "Contains stock tickers to be scrapped from yahoo finance."
             },
-            {
+            "postgres": {
                 "name": "Postgres",
                 "description": "Contains stock information to be inserted into postgres db."
             }
-        ],
-        "workers": [
-            {
+        },
+        "workers": {
+            "wiki": {
                 "name": "Wiki",
                 "description": "Responsible for the extraction of the stock tickers of S&P500 companies.",
                 "module": "src.wikipedia",
                 "class": "WikiWorker",
                 "output_queue": "Tickers"
             }
-        ],
-        "schedulers": [
-            {
+        },
+        "schedulers": {
+            "yahoo": {
                 "name": "Yahoo",
                 "description": "Responsible for the extraction of the price information from Yahoo finance for a given stock ticker.",
                 "module": "src.yahoo_finance",
                 "class": "YahooFinancePriceScheduler",
                 "instances": 5,
-                "input_queue": "Tickers",
-                "output_queue": "Postgres"
+                "input_queue": "tickers",
+                "output_queue": "postgres"
             },
-            {
+            "postgres": {
                 "name": "Postgres",
                 "description": "Responsible for the insertion of the information given.",
                 "module": "src.postgres",
                 "class": "PostgresScheduler",
                 "instances": 5,
-                "input_queue": "Postgres"
+                "input_queue": "postgres"
             }
-        ]
+        }
     },
     "finance_yahoo": {
         "price_xpath": "//*[@id=\"nimbus-app\"]/section/section/section/article/section[1]/div[2]/div[1]/section/div/section[1]/div[1]/fin-streamer[1]/span",
