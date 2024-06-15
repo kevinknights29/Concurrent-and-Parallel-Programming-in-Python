@@ -10,20 +10,36 @@ logger = logging.getLogger(__name__)
 
 
 class PipelineExecutor:
+    """Executes a data processing pipeline based on the provided configuration.
+
+    Attributes:
+        _pipeline_config (dict): Configuration for the pipeline.
+        _queues (dict[str, Queue]): Dictionary of queues used in the pipeline.
+        _workers (dict[str, Any]): Dictionary of worker instances.
+        _schedulers (dict[str, Any]): Dictionary of scheduler instances.
+    """
+
     def __init__(self, pipeline_config: dict) -> None:
+        """Initializes the PipelineExecutor with the given configuration.
+
+        Args:
+            pipeline_config (dict): Configuration for the pipeline.
+        """
         self._pipeline_config = pipeline_config
         self._queues: dict[str, Queue] = {}
         self._workers: dict[str, Any] = {}
         self._schedulers: dict[str, Any] = {}
 
-    def _initialize_queues(self):
+    def _initialize_queues(self) -> None:
+        """Initializes the queues as defined in the pipeline configuration."""
         logger.debug("Initializing Queues.")
         for key, values in self._pipeline_config["queues"].items():
             description = values["description"]
             self._queues[key] = Queue()
             logger.info("Initialized Queue: %s, with Description: %s", key, description)
 
-    def _initialize_workers(self):
+    def _initialize_workers(self) -> None:
+        """Initializes the workers as defined in the pipeline configuration."""
         logger.debug("Initializing Workers.")
         for key, values in self._pipeline_config["workers"].items():
             description = values["description"]
@@ -37,7 +53,8 @@ class PipelineExecutor:
             self._workers[key] = _class(**init_params)
             logger.info("Initialized Worker: %s using Class %s, with Description: %s", key, _class, description)
 
-    def _initialize_schedulers(self):
+    def _initialize_schedulers(self) -> None:
+        """Initializes the schedulers as defined in the pipeline configuration."""
         logger.debug("Initializing Schedulers.")
         for key, values in self._pipeline_config["schedulers"].items():
             description = values["description"]
@@ -58,7 +75,8 @@ class PipelineExecutor:
                 description,
             )
 
-    def _join_schedulers(self):
+    def _join_schedulers(self) -> None:
+        """Joins all the scheduler instances."""
         logger.debug("Joining Schedulers.")
         to_join = []
         for _, schedulers in self._schedulers.items():
@@ -67,7 +85,8 @@ class PipelineExecutor:
             scheduler.join()
         logger.info("%s Schedulers joined.", len(self._schedulers))
 
-    def setup_pipeline(self):
+    def setup_pipeline(self) -> None:
+        """Sets up the pipeline by initializing queues, workers, and schedulers."""
         self._initialize_queues()
         self._initialize_workers()
         self._initialize_schedulers()
