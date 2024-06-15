@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import logging
-from typing import Generator
+from multiprocessing import Queue
 
 import requests  # type: ignore
 from bs4 import BeautifulSoup
-
 
 # Initialize the logger
 logger = logging.getLogger(__name__)
@@ -20,14 +19,21 @@ class WikiWorker:
         _page (str): The HTML content of the page.
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        input_queue: Queue | None,
+        output_queue: Queue,
+        **kwargs,
+    ):
         """
         Constructs the necessary attributes for the WikiWorker object.
         """
         self._url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
         self._page = None
+        self._input_queue = input_queue
+        self._output_queue = output_queue
 
-    def _extract_company_ticker(self) -> Generator[list[str], None, None]:
+    def _extract_company_ticker(self) -> None:
         """
         Extracts the company ticker from the Wikipedia page.
 
@@ -42,9 +48,10 @@ class WikiWorker:
         rows = table.find_all("tr")[1:]
         for row in rows:
             ticker = row.find_all("td")[0].text.strip("\n")
-            yield [ticker]
+            self._output_queue.put(ticker)
+            logger.info("Ticker %s data has been pushed to an output queue!", ticker)
 
-    def get_page_content(self) -> Generator[list[str], None, None]:
+    def get_page_content(self) -> None:
         """
         Fetches the page content if it hasn't been fetched already, and yields the company tickers.
 
@@ -61,17 +68,5 @@ class WikiWorker:
             response = requests.get(self._url)
             if response.status_code != 200:
                 logger.error("Failed to fetch page content")
-                yield []
-
         self._page = response.text
-
-        yield from self._extract_company_ticker()
-
-
-if __name__ == "__main__":
-    worker = WikiWorker()
-    list_of_tickers = []
-    for ticker in worker.get_page_content():
-        list_of_tickers.append(ticker)
-    print("Tickers: ", len(list_of_tickers))
-    print("Last Ticker: ", list_of_tickers[-1])
+        self._extract_company_ticker()

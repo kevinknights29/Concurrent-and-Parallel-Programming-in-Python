@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-import json
 import logging.config
 import time
-from multiprocessing import Queue
 from pathlib import Path
 
-from src import postgres
-from src import wikipedia
-from src import yahoo_finance
+from src.pipeline import executor
+from src.utils import config
 
-# Define the number of scheduler instances
-YAHOO_SCHEDULERS = 5
-POSTGRES_SCHEDULERS = 5
+CONFIG = config.config()
+PIPELINE_CONFIG = CONFIG["pipeline"]
 
 # Initialize the logger
 logger = logging.getLogger(__name__)
@@ -26,8 +22,7 @@ def _setup_logging() -> None:
     Path("logs/errors.log").touch(exist_ok=True)  # filename should match the one in config.json
 
     # Configure ROOT logger
-    LOGGING_CONFIG = json.load(open("config.json"))["logging"]
-    logging.config.dictConfig(LOGGING_CONFIG)
+    logging.config.dictConfig(CONFIG["logging"])
 
 
 def main() -> None:
@@ -41,34 +36,16 @@ def main() -> None:
     """
     _setup_logging()
 
+    logger.debug("Starting pipeline.")
     start_time = time.time()
-    tickers_queue: Queue = Queue()
-    postgres_queue: Queue = Queue()
 
-    wiki_worker = wikipedia.WikiWorker()
-    yahoo_schedulers = []
-    postgres_schedulers = []
+    pipeline = executor.PipelineExecutor(pipeline_config=CONFIG["pipeline"])
+    pipeline.setup_pipeline()
 
-    for _ in range(YAHOO_SCHEDULERS):
-        yahoo_scheduler = yahoo_finance.YahooFinancePriceScheduler(
-            input_queue=tickers_queue,
-            output_queue=postgres_queue,
-        )
-        yahoo_schedulers.append(yahoo_scheduler)
+    pipeline._workers["wiki"].get_page_content()
 
-    for _ in range(POSTGRES_SCHEDULERS):
-        postgres_scheduler = postgres.PostgresScheduler(postgres_queue)
-        postgres_schedulers.append(postgres_scheduler)
-
-    for company_ticker in wiki_worker.get_page_content():
-        ticker = company_ticker[0]
-        tickers_queue.put(ticker)
-
-    for _ in range(YAHOO_SCHEDULERS):
-        tickers_queue.put(yahoo_finance.YahooFinancePriceScheduler.STOP_SIGNAL)
-
-    for scheduler in yahoo_schedulers:
-        scheduler.join()
+    for _ in pipeline._schedulers["yahoo"]:
+        pipeline._queues["tickers"].put(PIPELINE_CONFIG["stop_signal"])
 
     logger.debug(f"Time taken: {time.time() - start_time:.2f} seconds")
 

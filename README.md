@@ -20,6 +20,12 @@ The project involves building a system that fetches the list of companies from t
 
 The stock data is then inserted into a PostgreSQL database. The system leverages concurrent and parallel programming in Python to efficiently manage the flow of data between different components: fetching the list of companies, retrieving stock prices, and storing the data in the database.
 
+### Pipeline Feature
+
+This project now includes a pipeline feature that allows the process to be configured from a configuration file.
+
+The pipeline executor initializes and manages queues, workers, and schedulers based on the provided configuration, making the system highly flexible and easy to modify.
+
 ### Processing Logs
 
 ![image](https://github.com/kevinknights29/Concurrent-and-Parallel-Programming-in-Python/assets/74464814/12ebb4a7-5039-4746-8083-34efb062fd62)
@@ -53,6 +59,8 @@ The project is designed to be a learning exercise, focusing on the practical app
 
 ## System Design
 
+### High Level Process
+
 ```mermaid
 graph TD;
     A[Wikipedia] -->|Fetches tickers| B[WikiWorker]
@@ -80,6 +88,36 @@ graph TD;
         C[Tickers Queue]
         E[Postgres Queue]
     end
+```
+
+### Pipeline Design
+
+```mermaid
+graph TD;
+    A[PipelineExecutor Initialization] --> B[Initialize Queues]
+    B --> C[Create Queues from Config]
+    C --> D[Assign Queue Instances]
+
+    A --> E[Initialize Workers]
+    E --> F[Create Workers from Config]
+    F --> G[Import Worker Classes]
+    G --> H[Assign Input/Output Queues]
+    H --> I[Instantiate Worker Classes]
+
+    A --> J[Initialize Schedulers]
+    J --> K[Create Schedulers from Config]
+    K --> L[Import Scheduler Classes]
+    L --> M[Assign Input/Output Queues]
+    M --> N[Instantiate Scheduler Instances]
+
+    A --> O[Join Schedulers]
+    O --> P[Collect Schedulers]
+    P --> Q[Join Scheduler Instances]
+
+    A --> R[Setup Pipeline]
+    R --> B
+    R --> E
+    R --> J
 ```
 
 ## Alternatives Considered
