@@ -49,7 +49,7 @@ class PipelineExecutor:
                 "input_queue": self._queues.get(input_queue),
                 "output_queue": self._queues.get(output_queue),
             }
-            self._schedulers[key] = [_class(**init_params) * instances]
+            self._schedulers[key] = [_class(**init_params) for _ in range(instances)]
             logger.info(
                 "Initialized %s Schedulers: %s using Class %s, with Description: %s",
                 instances,
