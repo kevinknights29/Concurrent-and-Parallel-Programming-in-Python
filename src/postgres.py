@@ -33,15 +33,25 @@ class PostgresScheduler(Thread):
 
     STOP_SIGNAL = "STOP"
 
-    def __init__(self, input_queue: Queue, **kwargs) -> None:
+    def __init__(
+        self,
+        input_queue: Queue,
+        output_queue: Queue | None = None,
+        **kwargs,
+    ) -> None:
         """Initializes the PostgresScheduler with a queue of tasks.
 
         Args:
             queue (Queue): The queue of tasks to be executed.
             **kwargs (dict): Arbitrary keyword arguments.
+        Args:
+            input_queue (Queue): The queue to retrieve stock information.
+            output_queue (Queue): The queue to store additional information for further processing.
+            **kwargs: Arbitrary keyword arguments.
         """
         super().__init__(**kwargs)
         self._input_queue = input_queue
+        self._output_queue = output_queue
         self.start()
 
     def run(self) -> None:
