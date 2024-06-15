@@ -18,45 +18,42 @@ class PipelineExecutor:
 
     def _initialize_queues(self):
         logger.debug("Initializing Queues.")
-        for item in self._pipeline_config["queues"]:
-            name = item["name"]
-            description = item["description"]
-            self._queues[name] = Queue
-            logger.info("Initialized Queue: %s, with Description: %s", name, description)
+        for key, values in self._pipeline_config["queues"].items():
+            description = values["description"]
+            self._queues[key] = Queue()
+            logger.info("Initialized Queue: %s, with Description: %s", key, description)
 
     def _initialize_workers(self):
         logger.debug("Initializing Workers.")
-        for item in self._pipeline_config["workers"]:
-            name = item["name"]
-            description = item["description"]
-            _class = getattr(importlib.import_module(item["location"]), item["class"])
-            input_queue = item.get("input_queue")
-            output_queue = item.get("output_queue")
+        for key, values in self._pipeline_config["workers"].items():
+            description = values["description"]
+            _class = getattr(importlib.import_module(values["module"]), values["class"])
+            input_queue = values.get("input_queue")
+            output_queue = values.get("output_queue")
             init_params = {
                 "input_queue": self._queues.get(input_queue),
                 "output_queue": self._queues.get(output_queue),
             }
-            self._workers[name] = _class(**init_params)
-            logger.info("Initialized Worker: %s using Class %s, with Description: %s", name, _class, description)
+            self._workers[key] = _class(**init_params)
+            logger.info("Initialized Worker: %s using Class %s, with Description: %s", key, _class, description)
 
     def _initialize_schedulers(self):
         logger.debug("Initializing Schedulers.")
-        for item in self._pipeline_config["schedulers"]:
-            name = item["name"]
-            description = item["description"]
-            instances = item["instances"]
-            _class = getattr(importlib.import_module(item["location"]), item["class"])
-            input_queue = item.get("input_queue")
-            output_queue = item.get("output_queue")
+        for key, values in self._pipeline_config["schedulers"].items():
+            description = values["description"]
+            instances = values["instances"]
+            _class = getattr(importlib.import_module(values["module"]), values["class"])
+            input_queue = values.get("input_queue")
+            output_queue = values.get("output_queue")
             init_params = {
                 "input_queue": self._queues.get(input_queue),
                 "output_queue": self._queues.get(output_queue),
             }
-            self._schedulers[name] = [_class(**init_params) * instances]
+            self._schedulers[key] = [_class(**init_params) * instances]
             logger.info(
                 "Initialized %s Schedulers: %s using Class %s, with Description: %s",
                 instances,
-                name,
+                key,
                 _class,
                 description,
             )
