@@ -1,3 +1,34 @@
+## 0.5.0 (2024-06-15)
+
+### Feat
+
+- added config.py within the utils submodule
+- added config file path as constant
+- added pipeline submodule
+- added git-graph extension
+- added pipeline config
+
+### Fix
+
+- updated class multiplication
+- added output_queue as an optional __init__ arg
+- updated config format
+- updated function to parse config file
+- added mypy and types-pyyaml as dependencies
+
+### Refactor
+
+- updated psycopg dependency for devcontainer
+- updated logic to leverage pipeline/executor submodule
+- fixed typo in docs
+- renamed arg queue to input_queue for consistency
+- updated WikiWorker class to write to an output queue
+- uodated PipelineExecutor class to match new config structure
+- updated config structure
+- removed mypy types from devcontainer requirements
+- renamed devcontainer
+- updated pre-commit hooks version
+
 ## 0.4.0 (2024-06-09)
 
 ### Feat
