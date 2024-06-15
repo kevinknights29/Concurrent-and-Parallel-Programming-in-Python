@@ -1,27 +1,24 @@
 {
     "pipeline": {
+        "stop_signal": "STOP",
         "queues": {
             "tickers": {
-                "name": "Tickers",
                 "description": "Contains stock tickers to be scrapped from yahoo finance."
             },
             "postgres": {
-                "name": "Postgres",
                 "description": "Contains stock information to be inserted into postgres db."
             }
         },
         "workers": {
             "wiki": {
-                "name": "Wiki",
                 "description": "Responsible for the extraction of the stock tickers of S&P500 companies.",
                 "module": "src.wikipedia",
                 "class": "WikiWorker",
-                "output_queue": "Tickers"
+                "output_queue": "tickers"
             }
         },
         "schedulers": {
             "yahoo": {
-                "name": "Yahoo",
                 "description": "Responsible for the extraction of the price information from Yahoo finance for a given stock ticker.",
                 "module": "src.yahoo_finance",
                 "class": "YahooFinancePriceScheduler",
@@ -30,7 +27,6 @@
                 "output_queue": "postgres"
             },
             "postgres": {
-                "name": "Postgres",
                 "description": "Responsible for the insertion of the information given.",
                 "module": "src.postgres",
                 "class": "PostgresScheduler",
