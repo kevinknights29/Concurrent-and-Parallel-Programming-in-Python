@@ -49,7 +49,7 @@ class YahooFinancePriceScheduler(Thread):
 
         Args:
             input_queue (Queue): The queue to retrieve stock tickers.
-            output_queue (Queue): The queue to storing information retrieved for further processing.
+            output_queue (Queue): The queue to store information retrieved for further processing.
             **kwargs: Arbitrary keyword arguments.
         """
         super().__init__(**kwargs)
